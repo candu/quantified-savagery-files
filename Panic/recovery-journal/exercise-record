@@ -28,7 +28,7 @@ date,time,type,duration
 2012-02-12,11:00,running,60
 2012-02-15,12:00,cycling,60
 2012-02-15,20:00,soccer,60
-2012-02-21,16:00,conditioning
+2012-02-21,16:00,conditioning,45
 2012-02-22,20:00,soccer,60
 2012-03-15,16:00,conditioning,45
 2012-03-16,12:00,conditioning,45
