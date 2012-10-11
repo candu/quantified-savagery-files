@@ -24,14 +24,19 @@ train_set = []
 dates = set(W).intersection(F)
 for ds in dates:
   try:
-    ds_data = {
-      'relaxation' : bool(int(W[ds]['relaxation'])),
-      'exercise' : bool(int(W[ds]['exercise'])),
-      'caffeine' : int(F[ds]['caffeine']) > 0,
-      'sweets' : int(F[ds]['sweets']) > 1,
-      'alcohol' : int(F[ds]['alcohol']) > 4,
-      'supplements' : bool(int(F[ds]['supplements']))
-    }
+    ds_data = {}
+    if bool(int(W[ds]['relaxation'])):
+      ds_data['relaxation'] = True
+    if bool(int(W[ds]['exercise'])):
+      ds_data['exercise'] = True
+    if bool(int(W[ds]['supplements'])):
+      ds_data['supplements'] = True
+    if int(F[ds]['caffeine']) > 0:
+      ds_data['caffeine'] = True
+    if int(F[ds]['sweets']) > 1:
+      ds_data['sweets'] = True
+    if int(F[ds]['alcohol']) > 4:
+      ds_data['alcohol'] = True
   except (ValueError, KeyError):
     continue
   had_panic = P.get(ds) and 'panic' or 'no-panic'
