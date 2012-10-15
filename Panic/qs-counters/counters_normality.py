@@ -81,8 +81,8 @@ normal_fit_equation_text(NX, NY, mu, std)
 pylab.savefig('qs-counters-alcohol-histogram.png')
 pylab.close()
 
-print scipy.stats.shapiro(alcohol_A)
-print scipy.stats.shapiro(alcohol_B)
+print 'alcohol, recovery-journal: ', scipy.stats.shapiro(alcohol_A)
+print 'alcohol, qs-counters: ', scipy.stats.shapiro(alcohol_B)
 
 sweets_A = map(lambda row: float(row['sweets']), recovery_journal_dataset[:31])
 hist_A = histogram(sweets_A)
@@ -108,5 +108,5 @@ normal_fit_equation_text(NX, NY, mu, std)
 pylab.savefig('qs-counters-sweets-histogram.png')
 pylab.close()
 
-print scipy.stats.shapiro(sweets_A)
-print scipy.stats.shapiro(sweets_B)
+print 'sugar, recovery-journal: ', scipy.stats.shapiro(sweets_A)
+print 'sugar, qs-counters: ', scipy.stats.shapiro(sweets_B)
