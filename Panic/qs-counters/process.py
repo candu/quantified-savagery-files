@@ -30,15 +30,28 @@ for row in csv.reader(sys.stdin):
     stats[cname][date] = value
 cur_date = dt.strptime(min_date, '%Y-%m-%d')
 max_date = dt.strptime(max_date, '%Y-%m-%d')
+writer = csv.DictWriter(sys.stdout, [
+  'date',
+  'caffeine',
+  'sweets',
+  'alcohol',
+  'relaxation',
+  'relaxation_raw',
+  'exercise',
+  'exercise_raw'
+])
+writer.writeheader()
 while cur_date <= max_date:
   cur_date_str = cur_date.strftime('%Y-%m-%d')
   date_stats = dict((cname, stats[cname].get(cur_date_str, 0)) for cname in stats)
-  """
-  for cname in stats:
-    date_stats[cname] = stats[cname].get(cur_date_str, 0)
-  """
-  print json.dumps({
+  writer.writerow({
     'date': cur_date_str,
-    'stats': date_stats
+    'caffeine': date_stats['caffeine'],
+    'sweets': date_stats['sweets'],
+    'alcohol': date_stats['alcohol'],
+    'relaxation': int(date_stats['relaxation'] >= 300),
+    'relaxation_raw': date_stats['relaxation'],
+    'exercise': int(date_stats['exercise'] >= 1800),
+    'exercise_raw': date_stats['exercise']
   })
   cur_date += datetime.timedelta(days=1)
