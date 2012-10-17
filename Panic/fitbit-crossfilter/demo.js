@@ -20,7 +20,7 @@ function build_dataset(N, M, dM) {
   for (var i = 0; i < N; i++) {
     D.push({
       a: L[i],
-      b: 4 * M * (i / N + dM * Math.randgauss() + 0.25)
+      b: 5 * M * (0.1 + i / N + dM * Math.randgauss())
     });
   }
   return D;
@@ -28,34 +28,28 @@ function build_dataset(N, M, dM) {
 
 window.onload = function() {
   var M = 10;
-  var D = build_dataset(50000, M, 0.05);
+  var D = build_dataset(10000, M, 0.05);
   var filter = crossfilter(D);
-  var dimA = filter.dimension(function (d) {
-    return Math.max(0, Math.min(6 * M, d.a));
-  });
-  var grpA = dimA.group(function (a) {
-    return Math.round(a);
-  });
-  var dimB = filter.dimension(function (d) {
-    return Math.max(0, Math.min(6 * M, d.b));
-  });
-  var grpB = dimB.group(function (b) {
-    return Math.floor(b);
-  });
-  
+  var dim = function(k) {
+    return filter.dimension(function (d) {
+      return Math.max(0, Math.min(6 * M, d[k]));
+    });
+  }
+  var dimA = dim('a');
+  var dimB = dim('b');
+
+  var scale = d3.scale.linear()
+        .domain([0, 6 * M])
+        .rangeRound([0, 10 * (6 * M + 1)]);
   var chartDefs = [
     barChart()
         .dimension(dimA)
-        .group(grpA)
-      .x(d3.scale.linear()
-        .domain([0, 6 * M])
-        .rangeRound([0, 10 * (6 * M + 1)])),
+        .group(dimA.group(Math.round))
+        .x(scale),
     barChart()
         .dimension(dimB)
-        .group(grpB)
-      .x(d3.scale.linear()
-        .domain([0, 6 * M])
-        .rangeRound([0, 10 * (6 * M + 1)]))
+        .group(dimB.group(Math.round))
+        .x(scale)
   ]
   
   var chartDivs = d3.selectAll(".chart")
@@ -64,30 +58,16 @@ window.onload = function() {
       chartDiv.on("brush", renderAll).on("brushend", renderAll);
     });
   
-  function render(method) {
-    d3.select(this).call(method);
-  }
-  
   function renderAll() {
-    chartDivs.each(render);
+    chartDivs.each(function(method) {
+      d3.select(this).call(method);
+    });
   }
-  
-  window.filter = function(filters) {
-    filters.forEach(function(d, i) { chartDefs[i].filter(d); });
-    renderAll();
-  };
   
   window.reset = function(i) {
     chartDefs[i].filter(null);
     renderAll();
   };
-  
-  window.resetAll = function() {
-    for (var i = 0; i < chartDefs.length; i++) {
-      chartDefs[i].filter(null);
-    }
-    renderAll();
-  }
   
   renderAll();
 };
