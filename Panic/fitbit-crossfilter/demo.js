@@ -10,48 +10,43 @@ Math.randgauss = function() {
   }
 }
 
-function build_dataset(N, M, dM) {
+Array.range = function(start, end) {
   var L = [];
-  for (var i = 0; i < N; i++) {
-    L.push(M * (Math.randgauss() + 3));
+  for (var i = start; i < end; i++) {
+    L.push(i);
   }
-  L.sort(function(x1, x2) { return x1 - x2; });
-  var D = [];
-  for (var i = 0; i < N; i++) {
-    D.push({
-      a: L[i],
-      b: 5 * M * (0.1 + i / N + dM * Math.randgauss())
-    });
-  }
-  return D;
+  return L;
+}
+
+function build_dataset(N, M, dM) {
+  var R = Array.range(0, N);
+  var L = R.map(function(x) {
+    return M * (Math.randgauss() + 3);
+  }).sort(function(x1, x2) { return x1 - x2; });
+  return R.map(function(x, i) {
+    var b =  5 * M * (0.1 + i / N + dM * Math.randgauss());
+    return {a: L[i], b: b};
+  });
 }
 
 window.onload = function() {
   var M = 10;
-  var D = build_dataset(10000, M, 0.05);
-  var filter = crossfilter(D);
+  var filter = crossfilter(build_dataset(10000, M, 0.05));
   var dim = function(k) {
     return filter.dimension(function (d) {
       return Math.max(0, Math.min(6 * M, d[k]));
     });
   }
-  var dimA = dim('a');
-  var dimB = dim('b');
-
-  var scale = d3.scale.linear()
+  var def = function(k) {
+    var dimK = dim(k);
+    return barChart()
+      .dimension(dimK)
+      .group(dimK.group(Math.round))
+      .x(d3.scale.linear()
         .domain([0, 6 * M])
-        .rangeRound([0, 10 * (6 * M + 1)]);
-  var chartDefs = [
-    barChart()
-        .dimension(dimA)
-        .group(dimA.group(Math.round))
-        .x(scale),
-    barChart()
-        .dimension(dimB)
-        .group(dimB.group(Math.round))
-        .x(scale)
-  ]
-  
+        .rangeRound([0, 10 * (6 * M + 1)]));
+  }
+  var chartDefs = [def('a'), def('b')];
   var chartDivs = d3.selectAll(".chart")
     .data(chartDefs)
     .each(function(chartDiv) {
