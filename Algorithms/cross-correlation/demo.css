@@ -1,0 +1,22 @@
+html, body {
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+path {
+  stroke-width: 2px;
+}
+
+path.s1 {
+  stroke: #c00;
+  fill: rgba(210, 0, 0, 0.3);
+}
+
+path.s2 {
+  stroke: #00c;
+  fill: rgba(0, 0, 210, 0.3);
+}
+
+line {
+  stroke: #999;
+  stroke-width: 1px;
+}
