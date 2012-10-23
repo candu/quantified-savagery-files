@@ -20,9 +20,19 @@ window.addEvent('domready', function() {
     noise : Array.range(0, N + 1).map(function(x) {
       return d * Math.randgauss();
     }),
-    impulse : Array.range(0, N + 1).map(function(x) {
-      return Math.max(0, Math.min(Math.randgauss() - 0.5, 1.5));
-    })
+    spiky : Array.range(0, N + 1).map(function(x) {
+      var q = Math.max(0, Math.min(Math.randgauss() - 0.5, 1.5));
+      if (q == 0) q = -1;
+      return q;
+    }),
+    square : Array.range(0, N + 1).map(function(x) {
+      var t = x % N;
+      return (t >= 10 && t <= 60) ? 1 : -1;
+    }),
+    triangle : Array.range(0, N + 1).map(function(x) {
+      var t = x % N;
+      return (t >= 10 && t <= 60) ? (t - 35) / 25 : -1;
+    }),
   };
   var s2Funcs = {
     sine: Array.range(0, 2 * N + 1).map(function(x) {
@@ -31,11 +41,19 @@ window.addEvent('domready', function() {
     noise : Array.range(0, 2 * N + 1).map(function(x) {
       return d * Math.randgauss();
     }),
-    impulse : Array.range(0, 2 * N + 1).map(function(x) {
+    spiky : Array.range(0, 2 * N + 1).map(function(x) {
       var t = (x - 42) % N;
       if (t < 0) t += N;
-      return s1Funcs['impulse'][t] + d * Math.randgauss();
-    })
+      return s1Funcs['spiky'][t] + d * Math.randgauss();
+    }),
+    square : Array.range(0, 2 * N + 1).map(function(x) {
+      var t = x % N;
+      return (t >= 80 && t <= 130) ? 1 : -1;
+    }),
+    triangle : Array.range(0, 2 * N + 1).map(function(x) {
+      var t = x % N;
+      return (t >= 80 && t <= 130) ? (t - 105) / 25 : -1;
+    }),
   };
   function update_s1(funcName) {
     S1 = s1Funcs[funcName];
@@ -116,6 +134,7 @@ window.addEvent('domready', function() {
     .domain([0, 1])
     .range(['#000', '#606']);
   function update_t(t) {
+    s2Area.attr('transform', 'translate(' + dx + ', 0)');
     var tx = Math.floor(x(t)) + 0.5;
     tLine.attr('x1', tx).attr('x2', tx);
     var tf = crossCorrelation(t);
@@ -131,7 +150,6 @@ window.addEvent('domready', function() {
   var dragBehavior = d3.behavior.drag().on('drag', function(d, i) {
     dx += d3.event.dx;
     dx = Math.max(-w, Math.min(dx, 0));
-    s2Area.attr('transform', 'translate(' + dx + ', 0)');
     update_t(Math.floor(-N * dx / w));
   });
 
