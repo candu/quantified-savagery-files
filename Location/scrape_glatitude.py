@@ -60,6 +60,4 @@ Usage: %s ARGS
 %s''' % (e, sys.argv[0], FLAGS)
     sys.exit(1)
   scraper = GoogleLatitudeScraper(FLAGS.key, FLAGS.secret)
-  until = datetime.datetime.now()
-  since = until - datetime.timedelta(days=2)
-  scraper.scrape(since, until)
+  scraper.scrape(datetime.datetime.fromtimestamp(0), datetime.datetime.now())
