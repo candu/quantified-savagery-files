@@ -19,8 +19,22 @@
       </div>
     </div>
     <div id="caption" class="hidden">
-      <div id="total"></div>
-      <div id="transactions"></div>
+      <div id="prompt">
+        click bubbles to see transaction details
+      </div>
+      <div id="total" class="hidden"></div>
+      <div id="transactions" class="hidden">
+        <table id="transactions_table">
+          <thead>
+            <tr>
+              <th width="120px">Date</th>
+              <th width="120px">Amount</th>
+              <th width="720px">Description</th>
+            </tr>
+          </thead>
+          <tbody id="transactions_tbody"></tbody>
+        </table>
+      </div>
     </div>
   </body>
 </html>

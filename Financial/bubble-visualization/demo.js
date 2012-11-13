@@ -58,7 +58,10 @@ function buildChart(data) {
     .style('fill', function(d) { return fill(d.R); })
     .style('stroke', function(d) { return d3.rgb(fill(d.R)).darker(1); })
     .style('stroke-width', function(d) { return Math.max(1.0, d.R / 50); })
-    .on('mouseover', function(d) {
+    .on('click', function(d) {
+      $('prompt').addClass('hidden');
+      $('total').removeClass('hidden');
+      $('transactions').removeClass('hidden');
       d3.selectAll('circle').attr('class', '');
       d3.select(this).attr('class', 'circle-active');
       var total = Math.round(d.amount * 100);
@@ -69,16 +72,17 @@ function buildChart(data) {
       }
       var text = d.category + ': $' + dollars + '.' + cents;
       $('total').set('text', text);
-      $('transactions').empty();
+      $('transactions_tbody').empty();
       d.txs.each(function(tx) {
-        var elem = new Element('div', {
-          text: JSON.stringify(tx)
-        });
-        elem.inject($('transactions'));
+        var tr = new Element('tr');
+        var fields = ['Date', 'Amount', 'Description'];
+        for (var i = 0; i < fields.length; i++) {
+          tr.grab(new Element('td', {
+            text: tx[fields[i]]
+          }));
+        }
+        $('transactions_tbody').grab(tr);
       });
-      $('caption').removeClass('hidden');
-    })
-    .on('mouseout', function(d) {
     })
     .call(force.drag);
   
@@ -158,6 +162,7 @@ window.addEvent('domready', function() {
       buildChart(d3.csv.parse(e.target.result));
     };
     reader.onloadend = function(e) {
+      $('caption').removeClass('hidden').addClass('chart-active');
       $('progress').addClass('hidden');
       $('drop_zone').addClass('hidden');
       $('chart').addClass('chart-active');
