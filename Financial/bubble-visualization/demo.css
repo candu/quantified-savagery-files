@@ -2,6 +2,7 @@ html, body {
   font-family: "Helvetica Neue", sans-serif;
   padding: 0;
   margin: 0;
+  min-width: 1024px;
 }
 
 #title {
@@ -9,10 +10,6 @@ html, body {
   background-color: #afa;
   padding: 4px;
   font-size: 200%;
-}
-
-#file_picker {
-  
 }
 
 #file {
@@ -23,7 +20,12 @@ html, body {
   height: 480px;
   width: 960px;
   margin: auto;
-  margin-top: 4px;
+  margin-top: 32px;
+}
+
+.chart-active {
+  border: 1px solid #DFE2E1;
+  background-color: #F7F7F7;
 }
 
 #drop_zone {
@@ -45,4 +47,13 @@ html, body {
 
 .hidden {
   display: none !important;
+}
+
+circle.node {
+  cursor: pointer;
+}
+
+circle.circle-active {
+  fill: #36f !important;
+  stroke: #03f !important;
 }

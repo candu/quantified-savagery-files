@@ -9,18 +9,23 @@ function buildChart(data) {
       return;
     }
     if (!(c in cs)) {
-      cs[c] = 0.0;
+      cs[c] = {
+        amount: 0,
+        txs: []
+      };
     }
-    cs[c] += +(tx['Amount']);
+    cs[c].amount += +(tx['Amount']);
+    cs[c].txs.push(tx);
   });
   var w = 960,
       h = 480,
       nodes = [];
   for (var c in cs) {
     nodes.push({
-      R: Math.max(2, Math.sqrt(cs[c])),
+      R: Math.max(2, Math.sqrt(cs[c].amount)),
       category: c,
-      weight: cs[c]
+      amount: cs[c].amount,
+      txs: cs[c].txs
     });
   }
   var Rs = nodes.map(function(d) { return d.R; });
@@ -54,7 +59,24 @@ function buildChart(data) {
     .style('stroke', function(d) { return d3.rgb(fill(d.R)).darker(1); })
     .style('stroke-width', function(d) { return Math.max(1.0, d.R / 50); })
     .on('mouseover', function(d) {
-      console.log(d.category);
+      d3.selectAll('circle').attr('class', '');
+      d3.select(this).attr('class', 'circle-active');
+      var total = Math.round(d.amount * 100);
+      var cents = total % 100;
+      var dollars = (total - cents) / 100;
+      if (cents < 10) {
+        cents = '0' + cents;
+      }
+      var text = d.category + ': $' + dollars + '.' + cents;
+      $('total').set('text', text);
+      $('transactions').empty();
+      d.txs.each(function(tx) {
+        var elem = new Element('div', {
+          text: JSON.stringify(tx)
+        });
+        elem.inject($('transactions'));
+      });
+      $('caption').removeClass('hidden');
     })
     .on('mouseout', function(d) {
     })
@@ -62,14 +84,14 @@ function buildChart(data) {
   
   force
     .gravity(0.05)
-    .friction(0.9)
+    .friction(0.95)
     .charge(function(d) { return -d.R * d.R / 8; });
 
   force.on('tick', function(e) {
-    // weight sorting
+    // vertical size sorting
     nodes.each(function(d) {
       var dy = floatPoint(d.R) - d.y;
-      d.y += 0.4 * dy * e.alpha;
+      d.y += 0.25 * dy * e.alpha;
     });
 
     // collision detection
@@ -138,6 +160,7 @@ window.addEvent('domready', function() {
     reader.onloadend = function(e) {
       $('progress').addClass('hidden');
       $('drop_zone').addClass('hidden');
+      $('chart').addClass('chart-active');
     };
     reader.readAsText(f);
   }
