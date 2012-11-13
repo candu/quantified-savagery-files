@@ -59,9 +59,9 @@ function buildChart(data) {
     .style('stroke', function(d) { return d3.rgb(fill(d.R)).darker(1); })
     .style('stroke-width', function(d) { return Math.max(1.0, d.R / 50); })
     .on('click', function(d) {
-      $('prompt').addClass('hidden');
-      $('total').removeClass('hidden');
-      $('transactions').removeClass('hidden');
+      document.id('prompt').addClass('hidden');
+      document.id('total').removeClass('hidden');
+      document.id('transactions').removeClass('hidden');
       d3.selectAll('circle').attr('class', '');
       d3.select(this).attr('class', 'circle-active');
       var total = Math.round(d.amount * 100);
@@ -71,8 +71,8 @@ function buildChart(data) {
         cents = '0' + cents;
       }
       var text = d.category + ': $' + dollars + '.' + cents;
-      $('total').set('text', text);
-      $('transactions_tbody').empty();
+      document.id('total').set('text', text);
+      document.id('transactions_tbody').empty();
       d.txs.each(function(tx) {
         var tr = new Element('tr');
         var fields = ['Date', 'Amount', 'Description'];
@@ -81,7 +81,7 @@ function buildChart(data) {
             text: tx[fields[i]]
           }));
         }
-        $('transactions_tbody').grab(tr);
+        document.id('transactions_tbody').grab(tr);
       });
     })
     .call(force.drag);
@@ -148,29 +148,29 @@ window.addEvent('domready', function() {
     var reader = new FileReader();
     reader.onloadstart = function(e) {
       if (e.lengthComputable) {
-        $('progress').removeClass('hidden');
-        $('progress_bar').set('value', 0);
-        $('progress_bar').set('max', e.total);
+        document.id('progress').removeClass('hidden');
+        document.id('progress_bar').set('value', 0);
+        document.id('progress_bar').set('max', e.total);
       }
     };
     reader.onprogress = function(e) {
       if (e.lengthComputable) {
-        $('progress_bar').value = e.loaded;
+        document.id('progress_bar').value = e.loaded;
       }
     };
     reader.onload = function(e) {
       buildChart(d3.csv.parse(e.target.result));
     };
     reader.onloadend = function(e) {
-      $('caption').removeClass('hidden').addClass('chart-active');
-      $('progress').addClass('hidden');
-      $('drop_zone').addClass('hidden');
-      $('chart').addClass('chart-active');
+      document.id('caption').removeClass('hidden').addClass('chart-active');
+      document.id('progress').addClass('hidden');
+      document.id('drop_zone').addClass('hidden');
+      document.id('chart').addClass('chart-active');
     };
     reader.readAsText(f);
   }
 
-  var dropZone = $('drop_zone');
+  var dropZone = document.id('drop_zone');
   dropZone.addEventListener('dragenter', function(evt) {
     evt.stopPropagation();
     evt.preventDefault();
