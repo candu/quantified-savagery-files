@@ -7,10 +7,16 @@
     <script src="demo.js"></script>
   </head>
   <body>
-    <input type="file" id="files" name="files">
-    <progress id="progress"></progress>
-    <span id="progress_pct"></span>
-    <output id="description"></output>
-    <div id="chart"></div>
+    <div id="title">Mint Bubbles</div>
+    <div id="chart">
+      <div id="drop_zone">
+        <p>
+          drop your data here
+          <div id="progress" class="hidden">
+            <progress id="progress_bar"></progress>
+          </div>
+        </p>
+      </div>
+    </div>
   </body>
 </html>

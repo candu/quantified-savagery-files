@@ -1,0 +1,48 @@
+html, body {
+  font-family: "Helvetica Neue", sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+#title {
+  color: #419D14;
+  background-color: #afa;
+  padding: 4px;
+  font-size: 200%;
+}
+
+#file_picker {
+  
+}
+
+#file {
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+#chart {
+  height: 480px;
+  width: 640px;
+  margin: auto;
+  margin-top: 4px;
+}
+
+#drop_zone {
+  display: table;
+  border: 2px dashed #bbb;
+  height: 100%;
+  width: 100%;
+  padding: 4px;
+  cursor: pointer;
+}
+
+#drop_zone p {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 150%;
+  color: #525252;
+}
+
+.hidden {
+  display: none !important;
+}
