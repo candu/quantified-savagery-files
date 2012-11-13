@@ -42,12 +42,6 @@ function buildChart(data) {
     .attr('width', w)
     .attr('height', h);
 
-  var force = d3.layout.force()
-    .nodes(nodes)
-    .links([])
-    .size([w, h])
-    .start();
-
   var node = vis.selectAll('circle.node')
     .data(nodes)
     .enter().append('svg:circle')
@@ -83,64 +77,64 @@ function buildChart(data) {
         }
         document.id('transactions_tbody').grab(tr);
       });
-    })
-    .call(force.drag);
+    });
   
-  force
+  var force = d3.layout.force()
+    .nodes(nodes)
+    .links([])
+    .size([w, h])
     .gravity(0.05)
     .friction(0.95)
-    .charge(function(d) { return -d.R * d.R / 8; });
-
-  force.on('tick', function(e) {
-    // vertical size sorting
-    nodes.each(function(d) {
-      var dy = floatPoint(d.R) - d.y;
-      d.y += 0.25 * dy * e.alpha;
-    });
-
-    // collision detection
-    var q = d3.geom.quadtree(nodes);
-    nodes.each(function(d1) {
-      q.visit(function(quad, x1, y1, x2, y2) {
-        var d2 = quad.point;
-        if (d2 && (d2 !== d1)) {
-          var x = d1.x - d2.x,
-              y = d1.y - d2.y,
-              L = Math.sqrt(x * x + y * y),
-              R = d1.R + d2.R;
-          if (L < R) {
-            L = (L - R) / L * 0.5;
-            var Lx = L * x,
-                Ly = L * y;
-            d1.x -= Lx; d1.y -= Ly; 
-            d2.x += Lx; d2.y += Ly; 
-          }
-        }
-        return
-          x1 > (d1.x + d1.R) ||
-          x2 < (d1.x - d1.R) ||
-          y1 > (d1.y + d1.R) ||
-          y2 < (d1.y - d1.R);
+    .on('tick', function(e) {
+      // vertical size sorting
+      nodes.each(function(d) {
+        var dy = floatPoint(d.R) - d.y;
+        d.y += 0.25 * dy * e.alpha;
       });
-    });
-    node
-      .attr('cx', function(d) { return d.x; })
-      .attr('cy', function(d) { return d.y; });
-  });
+  
+      // collision detection
+      var q = d3.geom.quadtree(nodes);
+      nodes.each(function(d1) {
+        q.visit(function(quad, x1, y1, x2, y2) {
+          var d2 = quad.point;
+          if (d2 && (d2 !== d1)) {
+            var x = d1.x - d2.x,
+                y = d1.y - d2.y,
+                L = Math.sqrt(x * x + y * y),
+                R = d1.R + d2.R;
+            if (L < R) {
+              L = (L - R) / L * 0.5;
+              var Lx = L * x,
+                  Ly = L * y;
+              d1.x -= Lx; d1.y -= Ly; 
+              d2.x += Lx; d2.y += Ly; 
+            }
+          }
+          return
+            x1 > (d1.x + d1.R) ||
+            x2 < (d1.x - d1.R) ||
+            y1 > (d1.y + d1.R) ||
+            y2 < (d1.y - d1.R);
+        });
+      });
+      node
+        .attr('cx', function(d) { return d.x; })
+        .attr('cy', function(d) { return d.y; });
+    })
+    .start();
+
+  node.call(force.drag);
 }
 
 window.addEvent('domready', function() {
-  function handleFileSelect(evt) {
-    console.log(evt);
+  function trapEvent(evt) {
     evt.stopPropagation();
     evt.preventDefault();
-
-    var files = evt.dataTransfer.files;
-    if (files.length == 0) {
-      alert('no files');
-      return;
-    }
-    var f = files[0];
+  }
+  
+  function handleFileSelect(evt) {
+    trapEvent(evt);
+    var f = evt.dataTransfer.files[0];
     if (f.type != 'text/csv') {
       alert('invalid file type: ' + f.type);
       return;
@@ -159,29 +153,20 @@ window.addEvent('domready', function() {
       }
     };
     reader.onload = function(e) {
-      buildChart(d3.csv.parse(e.target.result));
-    };
-    reader.onloadend = function(e) {
       document.id('caption').removeClass('hidden').addClass('chart-active');
       document.id('progress').addClass('hidden');
       document.id('drop_zone').addClass('hidden');
       document.id('chart').addClass('chart-active');
+      buildChart(d3.csv.parse(e.target.result));
     };
     reader.readAsText(f);
   }
 
   var dropZone = document.id('drop_zone');
-  dropZone.addEventListener('dragenter', function(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-  }, false);
-  dropZone.addEventListener('dragexit', function(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-  }, false);
+  dropZone.addEventListener('dragenter', trapEvent, false);
+  dropZone.addEventListener('dragexit', trapEvent, false);
   dropZone.addEventListener('dragover', function(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
+    trapEvent(evt);
     evt.dataTransfer.dropEffect = 'copy';
   }, false);
   dropZone.addEventListener('drop', handleFileSelect, false);
