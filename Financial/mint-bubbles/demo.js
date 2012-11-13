@@ -17,7 +17,7 @@ function buildChart(data) {
     cs[c].amount += +(tx['Amount']);
     cs[c].txs.push(tx);
   });
-  var w = 960,
+  var w = document.id('chart').getWidth(),
       h = 480,
       nodes = [];
   for (var c in cs) {
