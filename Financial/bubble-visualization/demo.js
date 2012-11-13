@@ -13,7 +13,7 @@ function buildChart(data) {
     }
     cs[c] += +(tx['Amount']);
   });
-  var w = 640,
+  var w = 960,
       h = 480,
       nodes = [];
   for (var c in cs) {
@@ -24,9 +24,14 @@ function buildChart(data) {
     });
   }
   var Rs = nodes.map(function(d) { return d.R; });
+  var minR = d3.min(Rs),
+      maxR = d3.max(Rs);
   var fill = d3.scale.linear()
-    .domain([d3.min(Rs), d3.max(Rs)])
+    .domain([minR, maxR])
     .range(['#7EFF77', '#067500']);
+  var floatPoint = d3.scale.linear()
+    .domain([minR, maxR])
+    .range([h * 0.65, h * 0.35]);
 
   var vis = d3.select('#chart').append('svg:svg')
     .attr('width', w)
@@ -61,23 +66,35 @@ function buildChart(data) {
     .charge(function(d) { return -d.R * d.R / 8; });
 
   force.on('tick', function(e) {
-    nodes.each(function(d1, i) {
-      nodes.each(function(d2, j) {
-        if (i >= j) {
-          return;
+    // weight sorting
+    nodes.each(function(d) {
+      var dy = floatPoint(d.R) - d.y;
+      d.y += 0.4 * dy * e.alpha;
+    });
+
+    // collision detection
+    var q = d3.geom.quadtree(nodes);
+    nodes.each(function(d1) {
+      q.visit(function(quad, x1, y1, x2, y2) {
+        var d2 = quad.point;
+        if (d2 && (d2 !== d1)) {
+          var x = d1.x - d2.x,
+              y = d1.y - d2.y,
+              L = Math.sqrt(x * x + y * y),
+              R = d1.R + d2.R;
+          if (L < R) {
+            L = (L - R) / L * 0.5;
+            var Lx = L * x,
+                Ly = L * y;
+            d1.x -= Lx; d1.y -= Ly; 
+            d2.x += Lx; d2.y += Ly; 
+          }
         }
-        var dx = d2.x - d1.x;
-        var dy = d2.y - d1.y;
-        var sr = d1.R + d2.R;
-        var dr = sr - Math.sqrt(dx * dx + dy * dy);
-        if (dr > 0) {
-          var ux = dr * dx / sr;
-          var uy = dr * dy / sr;
-          d2.x += ux / 2;
-          d2.y += uy / 2;
-          d1.x -= ux / 2;
-          d1.y -= uy / 2;
-        }
+        return
+          x1 > (d1.x + d1.R) ||
+          x2 < (d1.x - d1.R) ||
+          y1 > (d1.y + d1.R) ||
+          y2 < (d1.y - d1.R);
       });
     });
     node
