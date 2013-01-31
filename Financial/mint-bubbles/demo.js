@@ -78,7 +78,7 @@ function buildChart(data) {
         document.id('transactions_tbody').grab(tr);
       });
     });
-  
+
   var force = d3.layout.force()
     .nodes(nodes)
     .links([])
@@ -91,7 +91,7 @@ function buildChart(data) {
         var dy = floatPoint(d.R) - d.y;
         d.y += 0.25 * dy * e.alpha;
       });
-  
+
       // collision detection
       var q = d3.geom.quadtree(nodes);
       nodes.each(function(d1) {
@@ -106,8 +106,8 @@ function buildChart(data) {
               L = (L - R) / L * 0.5;
               var Lx = L * x,
                   Ly = L * y;
-              d1.x -= Lx; d1.y -= Ly; 
-              d2.x += Lx; d2.y += Ly; 
+              d1.x -= Lx; d1.y -= Ly;
+              d2.x += Lx; d2.y += Ly;
             }
           }
           return
@@ -131,7 +131,7 @@ window.addEvent('domready', function() {
     evt.stopPropagation();
     evt.preventDefault();
   }
-  
+
   function handleFileSelect(evt) {
     trapEvent(evt);
     var f = evt.dataTransfer.files[0];
