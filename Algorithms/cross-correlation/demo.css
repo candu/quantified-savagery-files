@@ -1,0 +1,50 @@
+html, body {
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+#datasets {
+  cursor: move;
+}
+
+#cross-correlation {
+  margin-top: 10px;
+}
+
+path {
+  stroke-width: 2px;
+}
+
+path.s1 {
+  fill: rgba(210, 0, 0, 0.4);
+}
+
+path.s2 {
+  fill: rgba(0, 0, 210, 0.4);
+}
+
+path.c {
+  fill: rgba(126, 0, 210, 0.64);
+}
+
+line {
+  stroke: rgba(64, 64, 64, 0.7);
+  stroke-width: 1px;
+}
+
+line.t {
+  stroke: rgba(32, 32, 32, 0.8);
+  stroke-width: 2px;
+}
+
+#status {
+  color: #909;
+  font-family: "Menlo", monospace;
+}
+
+#s1-picker {
+  background-color: rgba(210, 0, 0, 0.7);
+}
+
+#s2-picker {
+  background-color: rgba(0, 0, 210, 0.7);
+}

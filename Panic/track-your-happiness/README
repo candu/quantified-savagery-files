@@ -1,0 +1,11 @@
+To get Track Your Happiness data:
+
+1) Log in to Track Your Happiness.
+2) Get document.cookie value and copy it.
+3) curl the page:
+
+curl -b <document.cookie> https://www.trackyourhappiness.org/reports/<report_id> > report.html
+
+4) grep/sed for chart URLs:
+
+grep -o 'https://chart.googleapis.com[^"]*' report.html | sed "s/\&amp;/\&/g" > chart-urls

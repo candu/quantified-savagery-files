@@ -1,0 +1,89 @@
+html, body {
+  font-family: "Helvetica Neue", sans-serif;
+  padding: 0;
+  margin: 0;
+  min-width: 1024px;
+}
+
+#title {
+  color: #419D14;
+  background-color: #afa;
+  padding: 4px;
+  font-size: 200%;
+  text-align: center;
+}
+
+#file {
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+#chart {
+  height: 480px;
+  width: 960px;
+  margin: auto;
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.chart-active {
+  border: 1px solid #DFE2E1;
+  background-color: #F7F7F7;
+}
+
+#drop_zone {
+  display: table;
+  border: 2px dashed #bbb;
+  height: 100%;
+  width: 100%;
+  padding: 4px;
+  cursor: pointer;
+}
+
+#drop_zone p {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 150%;
+  color: #7F7F7F;
+}
+
+.hidden {
+  display: none !important;
+}
+
+circle.node {
+  cursor: pointer;
+}
+
+circle.circle-active {
+  fill: #36f !important;
+  stroke: #03f !important;
+}
+
+#caption {
+  width: 960px;
+  margin: auto;
+  text-align: center;
+  min-height: 100%;
+}
+
+#total {
+  font-size: 125%;
+  color: #36f;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+#prompt {
+  font-size: 150%;
+  color: #888;
+  padding: 4px;
+}
+
+#transactions_table {
+  width: 100%;
+}
+
+th, td {
+  text-align: center;
+}
